@@ -2,11 +2,11 @@
 FROM maven:3.9.6-eclipse-temurin-21 AS build
 WORKDIR /app
 
-# Copy pom and source code
+# Copy pom.xml and source code
 COPY pom.xml .
 COPY src ./src
 
-# Build the app without running tests
+# Build the application
 RUN mvn clean package -DskipTests
 
 # Step 2: Run Application using Java 21 JRE
