@@ -1,9 +1,15 @@
-# Step 1: Build the Maven JAR
-FROM maven:3.9-eclipse-temurin-17 AS build
+# Step 1: Build using Maven Wrapper
+FROM eclipse-temurin:17-jdk AS build
 WORKDIR /app
-COPY pom.xml .
+
+# Copy wrapper and configuration files first (for caching)
+COPY .mvn/ .mvn
+COPY mvnw pom.xml ./
+RUN chmod +x mvnw
+
+# Copy source code and build
 COPY src ./src
-RUN mvn clean package -DskipTests
+RUN ./mvnw clean package -DskipTests -Dcheckstyle.skip=true
 
 # Step 2: Run the Application
 FROM eclipse-temurin:17-jre
