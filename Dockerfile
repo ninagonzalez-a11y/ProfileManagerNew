@@ -1,18 +1,16 @@
-# Step 1: Build using Maven Wrapper
-FROM eclipse-temurin:17-jdk AS build
+# Step 1: Build using Java 21 JDK
+FROM maven:3.9.6-eclipse-temurin-21 AS build
 WORKDIR /app
 
-# Copy wrapper and configuration files first (for caching)
-COPY .mvn/ .mvn
-COPY mvnw pom.xml ./
-RUN chmod +x mvnw
-
-# Copy source code and build
+# Copy pom and source code
+COPY pom.xml .
 COPY src ./src
-RUN ./mvnw clean package -DskipTests -Dcheckstyle.skip=true
 
-# Step 2: Run the Application
-FROM eclipse-temurin:17-jre
+# Build the app without running tests
+RUN mvn clean package -DskipTests
+
+# Step 2: Run Application using Java 21 JRE
+FROM eclipse-temurin:21-jre
 WORKDIR /app
 COPY --from=build /app/target/*.jar app.jar
 EXPOSE 8080
