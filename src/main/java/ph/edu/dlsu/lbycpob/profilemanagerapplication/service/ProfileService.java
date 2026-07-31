@@ -55,7 +55,7 @@ public class ProfileService {
         if (matches.isEmpty()) {
             throw new NoSuchElementException("No profile found matching \"" + trimmed + "\".");
         }
-        return matches.getFirst();
+        return matches.get(0);
     }
 
     @Transactional
